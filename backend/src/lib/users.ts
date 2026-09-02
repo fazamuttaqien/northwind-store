@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
-import { db } from '../db/index.js';
-import { users } from '../db/schema.js';
+import { db } from '../db/index';
+import { users } from '../db/schema';
 
 export async function getLocalUser(clerkUserId: string) {
   const [row] = await db

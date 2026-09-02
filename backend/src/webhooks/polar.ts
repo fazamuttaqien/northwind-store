@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
-import { getEnv } from '../lib/env.js';
-import { checkoutSessions, orderItems, orders } from '../db/schema.js';
+import { getEnv } from '../lib/env';
+import { checkoutSessions, orderItems, orders } from '../db/schema';
 import { eq } from 'drizzle-orm';
-import { db } from '../db/index.js';
+import { db } from '../db/index';
 import { Webhook } from 'standardwebhooks';
 
 function headerString(headers: Request['headers'], name: string) {

@@ -1,6 +1,6 @@
 import { StreamChat } from 'stream-chat';
-import type { Env } from './env.js';
-import type { UserRole } from '../db/schema.js';
+import type { Env } from './env';
+import type { UserRole } from '../db/schema';
 
 export function streamChatDisplayName(
   role: UserRole,

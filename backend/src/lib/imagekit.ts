@@ -1,5 +1,5 @@
 import ImageKit, { NotFoundError } from '@imagekit/nodejs';
-import type { Env } from './env.js';
+import type { Env } from './env';
 
 export async function deleteImageKitAsset(
   env: Env,

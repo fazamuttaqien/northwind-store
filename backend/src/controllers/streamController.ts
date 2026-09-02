@@ -1,12 +1,12 @@
 import type { Request, Response, NextFunction } from 'express';
 import { getAuth, clerkClient } from '@clerk/express';
-import { getLocalUser } from '../lib/users.js';
+import { getLocalUser } from '../lib/users';
 import {
   getStreamChatServer,
   streamChatDisplayName,
   streamUserId,
-} from '../lib/stream.js';
-import { getEnv } from '../lib/env.js';
+} from '../lib/stream';
+import { getEnv } from '../lib/env';
 
 const env = getEnv();
 
