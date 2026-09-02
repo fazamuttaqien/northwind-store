@@ -1,6 +1,6 @@
 # 🛒 PERN Stack E-Commerce Platform 🚀
 
-![Demo App](/frontend/public/screenshot-for-readme.png)
+![Demo App](/frontend/public/screenshot.png)
 
 ---
 
