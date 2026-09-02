@@ -1,0 +1,4 @@
+allowBuilds:
+  '@sentry/node-cpu-profiler': true
+  esbuild: true
+  stream-chat: true
