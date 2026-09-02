@@ -28,9 +28,14 @@ const app = express();
 const rawJson = express.raw({ type: 'application/json', limit: '1mb' });
 
 app.post('/webhooks/clerk', rawJson, (req, res) => {
+  console.log('=== CLERK WEBHOOK REQUEST ===');
+  console.log('method:', req.method);
+  console.log('url:', req.originalUrl);
+  console.log('headers:', req.headers);
+  console.log('isBuffer:', Buffer.isBuffer(req.body));
+
   void clerkWebhookHandler(req, res);
 });
-
 app.post('/webhooks/polar', rawJson, (req, res) => {
   void polarWebhookHandler(req, res);
 });
