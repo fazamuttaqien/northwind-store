@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
+import { verifyWebhook } from '@clerk/express/webhooks';
 import { getEnv } from '../lib/env';
-import { verifyWebhook } from '@clerk/backend/webhooks';
 import { parseRole } from '../lib/roles';
 import { db } from '../db';
 import { users } from '../db/schema';
@@ -15,25 +15,27 @@ export async function clerkWebhookHandler(req: Request, res: Response) {
       return;
     }
 
-    const payload =
-      req.body instanceof Buffer ? req.body.toString('utf8') : String(req.body);
-
-    const request = new Request('http://internal/webhooks/clerk', {
-      method: 'POST',
-      headers: new Headers(req.headers as HeadersInit),
-      body: payload,
+    console.log({
+      'svix-id': req.headers['svix-id'],
+      'svix-timestamp': req.headers['svix-timestamp'],
+      'svix-signature': req.headers['svix-signature'],
+      contentType: req.headers['content-type'],
     });
 
-    const evt = await verifyWebhook(request, {
+    const evt = await verifyWebhook(req, {
       signingSecret: env.CLERK_WEBHOOK_SECRET,
     });
+
+    console.log('Clerk webhook:', evt.type);
 
     if (evt.type === 'user.created' || evt.type === 'user.updated') {
       const u = evt.data;
 
       const email =
         u.email_addresses?.find((e) => e.id === u.primary_email_address_id)
-          ?.email_address ?? u.email_addresses?.[0]?.email_address;
+          ?.email_address ??
+        u.email_addresses?.[0]?.email_address ??
+        null;
 
       const displayName =
         [u.first_name, u.last_name].filter(Boolean).join(' ') ||
@@ -52,20 +54,29 @@ export async function clerkWebhookHandler(req: Request, res: Response) {
         })
         .onConflictDoUpdate({
           target: users.clerkUserId,
-          set: { email, displayName, role, updatedAt: new Date() },
+          set: {
+            email,
+            displayName,
+            role,
+            updatedAt: new Date(),
+          },
         });
     }
 
     if (evt.type === 'user.deleted') {
       const id = evt.data.id;
+
       if (id) {
         await db.delete(users).where(eq(users.clerkUserId, id));
       }
     }
 
-    res.json({ ok: true });
+    return res.status(200).json({ ok: true });
   } catch (err) {
-    console.error('Clerk webhook error', err);
-    res.status(400).json({ error: 'Invalid webhook' });
+    console.error('Clerk webhook error:', err);
+
+    return res.status(400).json({
+      error: 'Invalid webhook',
+    });
   }
 }
